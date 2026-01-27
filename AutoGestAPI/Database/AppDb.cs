@@ -17,7 +17,7 @@ namespace AutoGestAPI.Database
             modelBuilder.Entity<Client>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Clients)
-                .HasForeignKey(c => c.User.Id)
+                .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             //
 
