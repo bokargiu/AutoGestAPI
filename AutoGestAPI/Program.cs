@@ -73,6 +73,9 @@ builder.Services.AddScoped<AppDb>();
 builder.Services.AddScoped<User>();
 builder.Services.AddScoped<Client>();
 builder.Services.AddScoped<Service>();
+builder.Services.AddScoped<Order>();
+builder.Services.AddScoped<OrderAndService>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISingUpService, SingUpService>();
 #endregion

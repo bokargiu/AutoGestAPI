@@ -18,9 +18,9 @@ namespace AutoGestAPI.Models
 
         public User(string username, string email, string password)
         {
-            Username = username;
-            Email = email;
-            Password = BCrypt.Net.BCrypt.HashPassword(password);
+            this.Username = username;
+            this.Email = email;
+            this.Password = BCrypt.Net.BCrypt.HashPassword(password);
         }
     }
 }
