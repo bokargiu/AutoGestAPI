@@ -71,6 +71,8 @@ builder.Services.AddAuthentication(options =>
 #region Add Services
 builder.Services.AddScoped<AppDb>();
 builder.Services.AddScoped<User>();
+builder.Services.AddScoped<Client>();
+builder.Services.AddScoped<Service>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISingUpService, SingUpService>();
 #endregion

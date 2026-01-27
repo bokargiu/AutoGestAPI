@@ -9,6 +9,7 @@ namespace AutoGestAPI.Database
 
         public DbSet<User> User { get; set; }
         public DbSet<Client> Client { get; set; }
+        public DbSet<Service> Service { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,6 +18,12 @@ namespace AutoGestAPI.Database
             modelBuilder.Entity<Client>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Clients)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //
+            modelBuilder.Entity<Service>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Services)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             //
