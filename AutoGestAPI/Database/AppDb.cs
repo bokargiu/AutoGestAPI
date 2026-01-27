@@ -8,5 +8,19 @@ namespace AutoGestAPI.Database
         public AppDb(DbContextOptions<AppDb> options) : base(options) { }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Client> Client { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //
+            modelBuilder.Entity<Client>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Clients)
+                .HasForeignKey(c => c.User.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+            //
+
+        }
     }
 }

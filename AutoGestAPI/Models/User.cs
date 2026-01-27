@@ -1,4 +1,5 @@
 ﻿using BCrypt.Net;
+using System.Text.Json.Serialization;
 
 namespace AutoGestAPI.Models
 {
@@ -8,6 +9,9 @@ namespace AutoGestAPI.Models
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public ICollection<Client> Clients { get; set; } = new List<Client>();
 
         public User() { }
 
