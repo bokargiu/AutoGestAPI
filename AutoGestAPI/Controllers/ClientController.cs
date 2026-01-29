@@ -25,7 +25,6 @@ namespace AutoGestAPI.Controllers
         public async Task<IActionResult> getClients()
         {
             var clients = await _client.getClientForUser();
-
             return Ok(new { clients });
         }
 
@@ -37,7 +36,7 @@ namespace AutoGestAPI.Controllers
             return Ok();
         }
         [HttpDelete("{Id}"), Authorize]
-        public async Task<IActionResult> dellById([FromRoute]string Id)
+        public async Task<IActionResult> dellById([FromRoute] string Id)
         {
             await _client.dellByUserId(Id);
             return Ok();
