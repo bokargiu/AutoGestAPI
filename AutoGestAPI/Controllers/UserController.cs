@@ -1,6 +1,9 @@
 ﻿using AutoGestAPI.DTO_s;
+using AutoGestAPI.Models;
+using AutoGestAPI.Services;
 using AutoGestAPI.Services.AuthServices;
 using AutoGestAPI.Services.SingUpServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

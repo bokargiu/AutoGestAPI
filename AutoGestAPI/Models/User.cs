@@ -12,7 +12,9 @@ namespace AutoGestAPI.Models
 
         [JsonIgnore]
         public ICollection<Client> Clients { get; set; } = new List<Client>();
+        [JsonIgnore]
         public ICollection<Service> Services { get; set; } = new List<Service>();
+        [JsonIgnore]
         public ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public User() { }

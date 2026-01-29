@@ -70,7 +70,7 @@ namespace AutoGestAPI.Services.AuthServices
             }
             return null;
         }
-        public async Task<Guid?> getUserId()
+        public async Task<Guid> getUserId()
         {
             var user = _httpContextAccessor.HttpContext?.User;
 
@@ -79,7 +79,7 @@ namespace AutoGestAPI.Services.AuthServices
                      ?? user?.FindFirst(ClaimTypes.NameIdentifier);
 
             if (claim == null)
-                return null;
+                throw new Exception("Não Autorizado");
 
             return Guid.Parse(claim.Value);
         }

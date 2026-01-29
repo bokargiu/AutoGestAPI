@@ -1,6 +1,9 @@
 using AutoGestAPI.Database;
+using AutoGestAPI.Middleware;
 using AutoGestAPI.Models;
+using AutoGestAPI.Services;
 using AutoGestAPI.Services.AuthServices;
+using AutoGestAPI.Services.ClientServices;
 using AutoGestAPI.Services.SingUpServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +82,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISingUpService, SingUpService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 #endregion
 
 
@@ -90,6 +94,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
