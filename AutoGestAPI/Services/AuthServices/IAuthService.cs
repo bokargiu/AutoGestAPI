@@ -9,5 +9,6 @@ namespace AutoGestAPI.Services.AuthServices
         string HashPassword(string password);
         bool VerifyPassword(string password, string hashPassword);
         Task<string?> Login(UserLoginDTO dto);
+        Task<Guid?> getUserId();
     }
 }

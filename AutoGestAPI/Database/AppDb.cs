@@ -40,6 +40,12 @@ namespace AutoGestAPI.Database
                 .WithMany(s => s.OrderAndServices)
                 .HasForeignKey(os => os.ServiceId);
             //
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //
         }
     }
 }

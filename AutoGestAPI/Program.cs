@@ -75,6 +75,7 @@ builder.Services.AddScoped<Client>();
 builder.Services.AddScoped<Service>();
 builder.Services.AddScoped<Order>();
 builder.Services.AddScoped<OrderAndService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISingUpService, SingUpService>();

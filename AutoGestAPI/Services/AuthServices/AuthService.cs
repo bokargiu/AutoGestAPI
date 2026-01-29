@@ -2,12 +2,15 @@
 using AutoGestAPI.DTO_s;
 using AutoGestAPI.Models;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AutoGestAPI.Services.AuthServices
 {
@@ -15,11 +18,13 @@ namespace AutoGestAPI.Services.AuthServices
     {
         protected readonly IConfiguration _configuration;
         protected readonly AppDb _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(IConfiguration configuration, AppDb context)
+        public AuthService(IConfiguration configuration, AppDb context, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string GenerateJwt(User user)
@@ -64,6 +69,19 @@ namespace AutoGestAPI.Services.AuthServices
                 return GenerateJwt(user);
             }
             return null;
+        }
+        public async Task<Guid?> getUserId()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            var claim = user?.FindFirst(ClaimTypes.PrimarySid)
+                     ?? user?.FindFirst(JwtRegisteredClaimNames.Sub)
+                     ?? user?.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                return null;
+
+            return Guid.Parse(claim.Value);
         }
     }
 }
