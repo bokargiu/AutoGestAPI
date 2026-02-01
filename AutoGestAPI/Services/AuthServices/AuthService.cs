@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using AutoGestAPI.Exceptions;
 
 namespace AutoGestAPI.Services.AuthServices
 {
@@ -79,7 +80,7 @@ namespace AutoGestAPI.Services.AuthServices
                      ?? user?.FindFirst(ClaimTypes.NameIdentifier);
 
             if (claim == null)
-                throw new Exception("Não Autorizado");
+                throw new UnauthorizedException("Não Autorizado");
 
             return Guid.Parse(claim.Value);
         }

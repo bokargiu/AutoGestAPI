@@ -1,5 +1,6 @@
 ﻿using AutoGestAPI.Database;
 using AutoGestAPI.DTO_s;
+using AutoGestAPI.Exceptions;
 using AutoGestAPI.Models;
 using AutoGestAPI.Services.AuthServices;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,21 @@ namespace AutoGestAPI.Services.ClientServices
             _auth = auth;
             _context = context;
         }
-        public async Task<List<Client>> getClientForUser()
+        public async Task<List<Client>> getClientsByUserId()
         {
             Guid? userId = await _auth.getUserId();
             return await _context.Client.Where(c => userId == c.UserId).ToListAsync();
+        }
+        public async Task<Client> getClientById(string idString)
+        {
+            if (!Guid.TryParse(idString, out Guid id)) throw new BadRequestException("Client Id inválido");
+
+            Client? client = await _context.Client.Where(c =>  Guid.Parse(idString) == c.Id).FirstOrDefaultAsync();
+
+            if (client == null) throw new NotFoundException("Client não encontrado");
+            if (await _auth.getUserId() != client.UserId) throw new UnauthorizedException("Não Autorizado");
+
+            return client;
         }
         public async Task postClient(ClientDto dto)
         {
@@ -32,17 +44,11 @@ namespace AutoGestAPI.Services.ClientServices
         }
         public async Task dellByUserId(string idString)
         {
-            Guid id = Guid.Parse(idString);
-            Client? client = await _context.Client.Where(c => id == c.Id).FirstOrDefaultAsync();
-            if (client == null)
-                throw new Exception("Client não encontrado");
-            if (await _auth.getUserId() == client.UserId)
-            {
-                _context.Client.Remove(client);
-                await _context.SaveChangesAsync();
-                return;
-            }
-            throw new Exception("Não Autorizado");
+            Client client = await getClientById(idString);
+
+            _context.Client.Remove(client);
+            await _context.SaveChangesAsync();
+            return;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using AutoGestAPI.Exceptions;
+using System.Net;
 
 namespace AutoGestAPI.Middleware
 {
@@ -22,7 +23,14 @@ namespace AutoGestAPI.Middleware
         }
         public static Task HandleExceptions(HttpContext context, Exception exception)
         {
-            HttpStatusCode status = HttpStatusCode.InternalServerError;
+            HttpStatusCode status = exception switch
+            {
+                BadRequestException => HttpStatusCode.BadRequest,
+                NotFoundException => HttpStatusCode.NotFound,
+                UnauthorizedException => HttpStatusCode.Unauthorized,
+                _ => HttpStatusCode.InternalServerError
+            };
+
             string message = exception.Message;
             string? details = exception.StackTrace;
 
