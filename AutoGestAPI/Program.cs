@@ -4,6 +4,7 @@ using AutoGestAPI.Models;
 using AutoGestAPI.Services;
 using AutoGestAPI.Services.AuthServices;
 using AutoGestAPI.Services.ClientServices;
+using AutoGestAPI.Services.OrderServices;
 using AutoGestAPI.Services.ServiceServices;
 using AutoGestAPI.Services.SingUpServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -85,6 +86,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISingUpService, SingUpService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IServiceService,  ServiceService>();
+builder.Services.AddScoped<IOrderService,  OrderService>();
 #endregion
 
 
