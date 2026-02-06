@@ -4,6 +4,6 @@ namespace AutoGestAPI.Services.SingUpServices
 {
     public interface ISingUpService
     {
-        Task<string?> SingUp(SingUpDTO dto);
+        Task<string> SingUp(SingUpDTO dto);
     }
 }
