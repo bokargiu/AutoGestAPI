@@ -101,6 +101,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseCors("AllowSites");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

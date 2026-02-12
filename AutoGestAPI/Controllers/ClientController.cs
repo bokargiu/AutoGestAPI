@@ -24,7 +24,7 @@ namespace AutoGestAPI.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> getClients()
         {
-            var clients = await _client.getClientForUser();
+            var clients = await _client.getClientsByUserId();
             return Ok(new { clients });
         }
 

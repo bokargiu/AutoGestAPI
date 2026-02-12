@@ -32,7 +32,7 @@ namespace AutoGestAPI.Controllers
             return BadRequest();
         }
 
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO dto)
         {
             string? result = await _auth.Login(dto);
