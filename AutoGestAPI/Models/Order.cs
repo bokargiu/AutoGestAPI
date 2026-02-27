@@ -1,4 +1,6 @@
-﻿namespace AutoGestAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace AutoGestAPI.Models
 {
     public class Order
     {
@@ -9,7 +11,11 @@
         public double TotalPrice { get; set; }
         public Client Client { get; set; }
         public ICollection<OrderAndService> OrdersAndServices { get; set; } = new List<OrderAndService>();
+
+        [JsonIgnore]
         public Guid UserId { get; set; }
+
+        [JsonIgnore]
         public User User { get; set; }
 
         public Order() { }

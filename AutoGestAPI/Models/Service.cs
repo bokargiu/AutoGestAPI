@@ -1,4 +1,6 @@
-﻿namespace AutoGestAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace AutoGestAPI.Models
 {
     public class Service
     {
@@ -8,7 +10,9 @@
         public int DurationMin { get; set; }
         public ICollection<OrderAndService> OrderAndServices { get; set; } = new List<OrderAndService>();
 
+        [JsonIgnore]
         public Guid UserId { get; set; }
+        [JsonIgnore]
         public User User { get; set; }
 
         public Service() { }

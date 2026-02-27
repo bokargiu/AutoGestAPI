@@ -4,5 +4,6 @@
     {
         public string Name { get; set; }
         public string Number { get; set; }
+        public int Rating { get; set; }
     }
 }

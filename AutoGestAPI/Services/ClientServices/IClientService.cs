@@ -7,6 +7,7 @@ namespace AutoGestAPI.Services.ClientServices
     {
         Task<List<Client>> getClientsByUserId();
         Task postClient(ClientDto dto);
+        Task patchClient(ClientDto dto, string id);
         Task dellByUserId(string idString);
         Task<Client> getClientById(string idString);
     }

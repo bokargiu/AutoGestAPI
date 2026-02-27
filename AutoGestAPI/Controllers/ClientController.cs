@@ -25,16 +25,24 @@ namespace AutoGestAPI.Controllers
         public async Task<IActionResult> getClients()
         {
             var clients = await _client.getClientsByUserId();
-            return Ok(new { clients });
+            return Ok(clients);
         }
 
         [HttpPost, Authorize]
         public async Task<IActionResult> postClient([FromBody] ClientDto dto)
         {
-            if (dto.Number.Length != 11) return BadRequest();
+            if (dto.Number.Length != 15) return BadRequest();
             await _client.postClient(dto);
             return Ok();
         }
+        [HttpPatch("{Id}"), Authorize]
+        public async Task<IActionResult> patchClient([FromBody] ClientDto dto, [FromRoute] string Id)
+        {
+            if (dto.Number.Length != 15 || dto.Rating < 0 || dto.Rating > 5) return BadRequest();
+            await _client.patchClient(dto, Id);
+            return Ok();
+        }
+
         [HttpDelete("{Id}"), Authorize]
         public async Task<IActionResult> dellById([FromRoute] string Id)
         {

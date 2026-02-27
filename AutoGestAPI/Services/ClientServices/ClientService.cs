@@ -32,11 +32,22 @@ namespace AutoGestAPI.Services.ClientServices
 
             return client;
         }
+        public async Task patchClient(ClientDto dto, string id)
+        {
+            Client client = await getClientById(id);
+            client.Name = dto.Name;
+            client.Number = dto.Number;
+            client.Rating = dto.Rating;
+
+            await _context.SaveChangesAsync();
+        }
         public async Task postClient(ClientDto dto)
         {
+            if (dto.Rating < 0 || dto.Rating > 5) throw new BadRequestException("nivel de rating inválido");
             Client client = new Client();
             client.Name = dto.Name;
             client.Number = dto.Number;
+            client.Rating = dto.Rating;
 
             client.UserId = await _auth.getUserId();
             await _context.Client.AddAsync(client);
