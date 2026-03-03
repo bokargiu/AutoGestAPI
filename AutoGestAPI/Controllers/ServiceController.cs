@@ -27,6 +27,12 @@ namespace AutoGestAPI.Controllers
             await _service.postService(dto);
             return Ok();
         }
+        [HttpPatch("{Id}"), Authorize]
+        public async Task<IActionResult> patchService([FromBody] ServiceDto dto, [FromRoute] string Id)
+        {
+            await _service.patchService(dto, Id);
+            return Ok();
+        }
         [HttpDelete("{Id}"), Authorize]
         public async Task<IActionResult> dellService([FromRoute] string Id)
         {

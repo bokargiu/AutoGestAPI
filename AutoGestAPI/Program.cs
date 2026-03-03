@@ -100,7 +100,8 @@ using (var scope = app.Services.CreateScope()) { // Adicionando Migrações
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//app.Environment.IsDevelopment()
+if (true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -4,6 +4,7 @@ using AutoGestAPI.Exceptions;
 using AutoGestAPI.Models;
 using AutoGestAPI.Services.AuthServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AutoGestAPI.Services.ServiceServices
 {
@@ -41,6 +42,16 @@ namespace AutoGestAPI.Services.ServiceServices
             service.UserId = await _auth.getUserId();
 
             await _context.Service.AddAsync(service);
+            await _context.SaveChangesAsync();
+        }
+        public async Task patchService(ServiceDto dto, string id)
+        {
+            if (!Guid.TryParse(id, out Guid i)) throw new BadRequestException("Service Id inválido");
+            Service service = await getServiceById(id);
+            if (service.UserId != await _auth.getUserId()) throw new UnauthorizedException("O service id não pertence aou seu usuario");
+            service.Title = dto.Title;
+            service.Price = dto.Price;
+            service.DurationMin = dto.DurationMin;
             await _context.SaveChangesAsync();
         }
         public async Task dellService(string serviceId)
