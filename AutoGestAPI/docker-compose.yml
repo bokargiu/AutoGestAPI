@@ -1,0 +1,34 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-autogest
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: admin
+        MYSQL_DATABASE: AutoGestDB
+    ports:
+    - "3300:3306"
+    volumes:
+    - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: autogest-api
+    ports:
+    - "5000:8080"
+    depends_on:
+     mysql:
+        condition: service_healthy
+    environment:
+    - ConnectionStrings__Connection=server=mysql-autogest;port=3306;database=AutoGestDB;user=root;password=admin;
+    volumes:
+     - aspnet-data:/root/.aspnet/DataProtection-Keys
+
+volumes:
+  mysql-data:
+  aspnet-data:  

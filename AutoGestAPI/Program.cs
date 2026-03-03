@@ -92,6 +92,13 @@ builder.Services.AddScoped<IOrderService,  OrderService>();
 
 var app = builder.Build();
 
+app.MapGet("/", () => "Api está funcionando!");
+
+using (var scope = app.Services.CreateScope()) { // Adicionando Migrações
+    var db = scope.ServiceProvider.GetRequiredService<AppDb>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -103,7 +110,7 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseCors("AllowSites");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

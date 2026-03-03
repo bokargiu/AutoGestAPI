@@ -31,9 +31,9 @@ namespace AutoGestAPI.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> postClient([FromBody] ClientDto dto)
         {
-            if (dto.Number.Length != 15) return BadRequest();
+            if (dto.Number.Length != 15) return BadRequest("Numero invalido");
             await _client.postClient(dto);
-            return Ok();
+            return Created();
         }
         [HttpPatch("{Id}"), Authorize]
         public async Task<IActionResult> patchClient([FromBody] ClientDto dto, [FromRoute] string Id)
