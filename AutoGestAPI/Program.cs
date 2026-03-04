@@ -32,7 +32,9 @@ builder.Services.AddCors(options =>
 #endregion
 
 #region DB Configuration
-var connection = builder.Configuration.GetConnectionString("Connection");
+var connection = builder.Configuration.GetConnectionString(builder.Environment.IsDevelopment() 
+                                                            ? "LocalConnection" 
+                                                            : "DockerConnection");
 builder.Services.AddDbContext<AppDb>(options =>
 {
     options.UseMySql(connection, ServerVersion.AutoDetect(connection));
@@ -100,8 +102,7 @@ using (var scope = app.Services.CreateScope()) { // Adicionando Migrações
 }
 
 // Configure the HTTP request pipeline.
-//app.Environment.IsDevelopment()
-if (true)
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
