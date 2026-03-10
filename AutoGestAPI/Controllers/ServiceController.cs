@@ -19,7 +19,7 @@ namespace AutoGestAPI.Controllers
         public async Task<IActionResult> getServices()
         {
             var services = await _service.getServicesByUserId();
-            return Ok(new { services });
+            return Ok(services);
         }
         [HttpPost, Authorize]
         public async Task<IActionResult> postService([FromBody] ServiceDto dto)

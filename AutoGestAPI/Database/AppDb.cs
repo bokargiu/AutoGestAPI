@@ -30,7 +30,7 @@ namespace AutoGestAPI.Database
                 .OnDelete(DeleteBehavior.Cascade);
             //
             modelBuilder.Entity<OrderAndService>()
-                .HasKey(os => new { os.OrderId, os.ServiceId });
+                .HasKey(os => new { os.OrderId, os.ServiceId } );
             modelBuilder.Entity<OrderAndService>()
                 .HasOne(os => os.Order)
                 .WithMany(o => o.OrdersAndServices)
@@ -46,6 +46,11 @@ namespace AutoGestAPI.Database
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             //
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Client)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

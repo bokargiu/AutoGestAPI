@@ -4,6 +4,7 @@ using AutoGestAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoGestAPI.Migrations
 {
     [DbContext(typeof(AppDb))]
-    partial class AppDbModelSnapshot : ModelSnapshot
+    [Migration("20260306174043_orderModify")]
+    partial class orderModify
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,7 +163,7 @@ namespace AutoGestAPI.Migrations
             modelBuilder.Entity("AutoGestAPI.Models.Order", b =>
                 {
                     b.HasOne("AutoGestAPI.Models.Client", "Client")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -204,11 +207,6 @@ namespace AutoGestAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AutoGestAPI.Models.Client", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("AutoGestAPI.Models.Order", b =>

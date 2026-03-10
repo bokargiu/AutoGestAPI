@@ -26,43 +26,80 @@ namespace AutoGestAPI.Services.OrderServices
         public async Task<Order> getOrderById(string idString)
         {
             if (!Guid.TryParse(idString, out Guid id)) throw new BadRequestException("Order Id Inválido");
-            Order? order = await _context.Order.Where(o => Guid.Parse(idString) == o.Id).FirstOrDefaultAsync();
+            Order? order = await _context.Order.Where(o => Guid.Parse(idString) == o.Id)
+                                                .Include(o => o.Client)
+                                                .Include(o => o.OrdersAndServices)
+                                                    .ThenInclude(os => os.Service)
+                                                .FirstOrDefaultAsync();
             if (order == null) throw new NotFoundException("Order não encontrada");
             if (order.UserId != await _auth.getUserId()) throw new UnauthorizedException("Não Autorizado");
             return order;
         }
-        public async Task<List<Order>> getOrdersByUserId()
+        public async Task<List<OrderResponseDto>> getOrdersByUserId()
         {
             Guid id = await _auth.getUserId();
-            return await _context.Order.Where(o => id == o.UserId).ToListAsync();
+            var orders = await _context.Order.Where(o => id == o.UserId)
+                                                .ToListAsync();
+            return orders.Select(o => new OrderResponseDto
+            {
+                Id = o.Id,
+                Start = o.Start,
+                End = o.End,
+                TotalPrice = o.TotalPrice,
+                Client = o.Client,
+                Services = o.OrdersAndServices.Select(os => os.Service).ToList()
+            }).ToList();
         }
         public async Task postOrder(OrderDto dto)
         {
             Guid userId = await _auth.getUserId();
-            Order order = new Order()
+
+            if (!Guid.TryParse(dto.ClientId, out Guid clientId))
+                throw new BadRequestException("ClientId inválido");
+
+            Client client = await _client.getClientById(dto.ClientId);
+
+            Order order = new Order
             {
-                Day = dto.Date,
-                StartTime = dto.StartTime,
-                EndTime = dto.StartTime,
-                Client = await _client.getClientById(dto.ClientId),
-                UserId = userId
+                Start = dto.Start,
+                End = dto.Start,
+                UserId = userId,
+                ClientId = clientId
             };
-            foreach (string sId in dto.ServicesIds)
-            {
-                Service s = await _service.getServiceById(sId);
-                OrderAndService os = new OrderAndService()
+
+            await _context.Order.AddAsync(order);
+
+            List<Guid> serviceIds = dto.ServicesIds
+                .Select(id =>
                 {
-                    Order = order,
-                    Service = s
+                    if (!Guid.TryParse(id, out Guid guid))
+                        throw new BadRequestException("ServiceId inválido");
+                    return guid;
+                })
+                .ToList();
+
+            List<Service> services = await _context.Service
+                .Where(s => serviceIds.Contains(s.Id))
+                .ToListAsync();
+
+            foreach (Service service in services)
+            {
+                if (service.UserId != userId)
+                    throw new UnauthorizedException("Service não pertence ao usuário");
+
+                OrderAndService os = new OrderAndService
+                {
+                    OrderId = order.Id,
+                    ServiceId = service.Id
                 };
-                order.TotalPrice += s.Price;
-                order.EndTime = order.EndTime.AddMinutes(s.DurationMin);
+
+                order.TotalPrice += service.Price;
+                order.End = order.End.AddMinutes(service.DurationMin);
+
                 order.OrdersAndServices.Add(os);
             }
-            ;
-            await _context.Order.AddAsync(order);
+
             await _context.SaveChangesAsync();
-            return;
         }
         public async Task dellOrderById(string idString)
         {

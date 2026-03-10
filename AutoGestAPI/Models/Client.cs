@@ -8,6 +8,8 @@ namespace AutoGestAPI.Models
         public string Name { get; set; } = string.Empty;
         public string Number { get; set; } = string.Empty;
         public int Rating { get; set; }
+        [JsonIgnore]
+        public ICollection<Order> Orders = new List<Order>();
 
         [JsonIgnore]
         public Guid UserId { get; set; } = Guid.Empty;

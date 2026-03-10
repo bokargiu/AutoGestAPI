@@ -8,6 +8,7 @@ namespace AutoGestAPI.Models
         public string Title { get; set; } = string.Empty;
         public double Price { get; set; }
         public int DurationMin { get; set; }
+        [JsonIgnore]
         public ICollection<OrderAndService> OrderAndServices { get; set; } = new List<OrderAndService>();
 
         [JsonIgnore]

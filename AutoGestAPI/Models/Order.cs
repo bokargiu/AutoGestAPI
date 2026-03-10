@@ -5,11 +5,14 @@ namespace AutoGestAPI.Models
     public class Order
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public DateOnly Day { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public TimeOnly EndTime { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
         public double TotalPrice { get; set; }
+        [JsonIgnore]
         public Client Client { get; set; }
+        [JsonIgnore]
+        public Guid ClientId { get; set; }
+        [JsonIgnore]
         public ICollection<OrderAndService> OrdersAndServices { get; set; } = new List<OrderAndService>();
 
         [JsonIgnore]
@@ -19,10 +22,9 @@ namespace AutoGestAPI.Models
         public User User { get; set; }
 
         public Order() { }
-        public Order(DateOnly day, TimeOnly start)
+        public Order(DateTime start)
         {
-            this.Day = day;
-            this.StartTime = start;
+            this.Start = start;
         }
     }
 }
