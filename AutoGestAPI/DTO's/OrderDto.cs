@@ -16,7 +16,7 @@ namespace AutoGestAPI.DTO_s
         public DateTime End { get; set; }
         public double TotalPrice { get; set; }
         public Client Client { get; set; }
-        public List<Service> Services { get; set; }
+        public List<Service> Services { get; set; } 
     }
 
 }

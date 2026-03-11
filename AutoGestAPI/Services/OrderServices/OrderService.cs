@@ -27,20 +27,40 @@ namespace AutoGestAPI.Services.OrderServices
         {
             if (!Guid.TryParse(idString, out Guid id)) throw new BadRequestException("Order Id Inválido");
             Order? order = await _context.Order.Where(o => Guid.Parse(idString) == o.Id)
+                                                .FirstOrDefaultAsync();
+            if (order == null) throw new NotFoundException("Order não encontrada");
+            if (order.UserId != await _auth.getUserId()) throw new UnauthorizedException("Não Autorizado");
+            return order;
+        }
+        public async Task<OrderResponseDto> getOrderDtoById(string idString)
+        {
+            if (!Guid.TryParse(idString, out Guid id)) throw new BadRequestException("Order Id Inválido");
+            Order? order = await _context.Order.Where(o => Guid.Parse(idString) == o.Id)
                                                 .Include(o => o.Client)
                                                 .Include(o => o.OrdersAndServices)
                                                     .ThenInclude(os => os.Service)
                                                 .FirstOrDefaultAsync();
             if (order == null) throw new NotFoundException("Order não encontrada");
             if (order.UserId != await _auth.getUserId()) throw new UnauthorizedException("Não Autorizado");
-            return order;
+            return new OrderResponseDto
+            {
+                Id = order.Id,
+                Start = order.Start,
+                End = order.End,
+                TotalPrice = order.TotalPrice,
+                Client = order.Client,
+                Services = order.OrdersAndServices.Select(os => os.Service).ToList()
+            };
         }
         public async Task<List<OrderResponseDto>> getOrdersByUserId()
         {
             Guid id = await _auth.getUserId();
             var orders = await _context.Order.Where(o => id == o.UserId)
+                                                .Include(o => o.Client)
+                                                .Include(o => o.OrdersAndServices)
+                                                    .ThenInclude(os => os.Service)
                                                 .ToListAsync();
-            return orders.Select(o => new OrderResponseDto
+            List<OrderResponseDto> response = orders.Select(o => new OrderResponseDto
             {
                 Id = o.Id,
                 Start = o.Start,
@@ -49,6 +69,7 @@ namespace AutoGestAPI.Services.OrderServices
                 Client = o.Client,
                 Services = o.OrdersAndServices.Select(os => os.Service).ToList()
             }).ToList();
+            return response;
         }
         public async Task postOrder(OrderDto dto)
         {
@@ -108,7 +129,6 @@ namespace AutoGestAPI.Services.OrderServices
 
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
-            return;
         }
     }
 }

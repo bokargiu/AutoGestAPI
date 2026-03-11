@@ -27,11 +27,11 @@ namespace AutoGestAPI.Controllers
         {
             return Ok( await _order.getOrdersByUserId() );
         }
-        [HttpGet("{idString}"), Authorize]
+        [HttpGet("{id}"), Authorize]
         public async Task<IActionResult> getOrder([FromRoute]string id)
         {
-            Order order = await _order.getOrderById(id);
-            return Ok( new { order } );
+            OrderResponseDto order = await _order.getOrderDtoById(id);
+            return Ok( order );
         }
         [HttpPost, Authorize]
         public async Task<IActionResult> postOrder([FromBody] OrderDto dto)
