@@ -39,6 +39,12 @@ namespace AutoGestAPI.Controllers
             await _order.postOrder(dto);
             return Ok();
         }
+        [HttpPatch("{id}"), Authorize]
+        public async Task<IActionResult> patchOrder([FromBody] OrderDto dto, [FromRoute] string id)
+        {
+            await _order.patchOrder(dto, id);
+            return Ok();
+        }
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> dellOrder(string id)
         {
