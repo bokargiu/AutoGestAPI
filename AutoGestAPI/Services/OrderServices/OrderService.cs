@@ -75,6 +75,14 @@ namespace AutoGestAPI.Services.OrderServices
             }).ToList();
             return response;
         }
+        public async Task<List<OrderResponseDto>> getOrdersByMonthAndUserId(DateTime date)
+        {
+            List<OrderResponseDto> list = await getOrdersByUserId();
+            list = list.Where(o => date.Month == o.Start.Month 
+                                && date.Year == o.Start.Year)
+                        .ToList();
+            return list;
+        }
         public async Task postOrder(OrderDto dto)
         {
             Guid userId = await _auth.getUserId();

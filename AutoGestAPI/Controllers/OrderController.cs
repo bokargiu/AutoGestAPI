@@ -33,6 +33,11 @@ namespace AutoGestAPI.Controllers
             OrderResponseDto order = await _order.getOrderDtoById(id);
             return Ok( order );
         }
+        [HttpGet("Date:{date}"), Authorize]
+        public async Task<IActionResult> getOrdersOfMonth([FromRoute]DateTime date)
+        {
+            return Ok(await _order.getOrdersByMonthAndUserId(date));
+        }
         [HttpPost, Authorize]
         public async Task<IActionResult> postOrder([FromBody] OrderDto dto)
         {

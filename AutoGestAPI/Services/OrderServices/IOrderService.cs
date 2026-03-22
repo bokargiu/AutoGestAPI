@@ -8,6 +8,7 @@ namespace AutoGestAPI.Services.OrderServices
         Task<Order> getOrderById(string idString);
         Task<OrderResponseDto> getOrderDtoById(string idString);
         Task<List<OrderResponseDto>> getOrdersByUserId();
+        Task<List<OrderResponseDto>> getOrdersByMonthAndUserId(DateTime date);
         Task postOrder(OrderDto dto);
         Task patchOrder(OrderDto dto, string idString);
         Task dellOrderById(string idString);
