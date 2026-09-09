@@ -63,6 +63,11 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+AutoGestAPI/appsettings.Development.json
+AutoGestAPI/appsettings.json
+AutoGestAPI/Dockerfile
+AutoGestAPI/docker-compose.yml
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
