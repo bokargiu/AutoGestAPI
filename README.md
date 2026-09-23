@@ -9,7 +9,9 @@
 ## Informações Técnicas para rodar localmente:
 
   ### Visual Studio: 
-    Para rodar direto pela IDE será necessario configurar o appsettings.Development.josn para seu banco de dados, para rodar com o front vá o repo do front para mais instruções.
+  Para rodar direto pela IDE será necessario configurar o appsettings.Development.josn para seu banco de dados, para rodar com o front vá o repo do front para mais instruções.
 
   ### Docker:
-    Para isso terá que ter o docker instalado na maquina e rodar o seguinte comando no CMD na pasta ".../AutoGestAPI/AutoGestAPI> docker compose -f docker-compose.development.yml up -d" 
+  Para isso terá que ter o docker instalado na maquina e rodar o seguinte comando no CMD na pasta ".../AutoGestAPI/AutoGestAPI>"
+      
+      docker compose -f docker-compose.development.yml up -d
