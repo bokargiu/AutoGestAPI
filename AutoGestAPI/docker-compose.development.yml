@@ -1,0 +1,50 @@
+﻿services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-autogest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=AutoGest
+    ports:
+    - "3306:3306"
+    volumes:
+    - mysql-autogest:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: autogest-api
+    restart: unless-stopped
+    ports:
+    - "5169:8080"
+    environment:
+      ConnectionStrings__Connection: "server=mysql;port=3306;database=AutoGest;user=root;password=admin;"
+      ASPNETCORE_ENVIRONMENT: Development
+      JWT__KEY: "Senha-Muito-Muito-Segura-Que-Nem-Deus-Sabe"
+    volumes:
+     - aspnet-autogest:/root/.aspnet/DataProtection-Keys
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  angular:
+    build:
+      context: ../../AutoGestFront
+      dockerfile: Dockerfile
+    container_name: autogest-front
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./AutoGestFront:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  mysql-autogest:
+  aspnet-autogest:
