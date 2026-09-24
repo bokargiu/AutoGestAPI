@@ -52,9 +52,16 @@ jobs:
               ssh.bokargiu.com.br \
               "cd ~/AutoGest/AutoGestAPI && git status"
 
+      - name: Pull
+        run: |
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              ssh.bokargiu.com.br \
+              "cd ~/AutoGest/AutoGestAPI && git pull --ff-only origin main && docker compose down"
+
       - name: Deploy
         run: |
           ssh -o BatchMode=yes \
               -o StrictHostKeyChecking=no \
               ssh.bokargiu.com.br \
-              "cd ~/AutoGest/AutoGestAPI && git pull --ff-only origin main && docker compose up -d --build"
+              "cd ~/AutoGest/AutoGestAPI/AutoGestAPI && docker compose -f docker-compose.prod.yml up -d --build"
