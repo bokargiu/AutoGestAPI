@@ -150,7 +150,7 @@ builder.Services.AddScoped<OrderAndService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ISingUpService, SingUpService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IServiceService,  ServiceService>();
 builder.Services.AddScoped<IOrderService,  OrderService>();

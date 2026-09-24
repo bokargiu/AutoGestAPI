@@ -14,17 +14,17 @@ namespace AutoGestAPI.Controllers
     public class UserController : ControllerBase
     {
         protected readonly IAuthService _auth;
-        protected readonly ISingUpService _singUp;
-        public UserController(IAuthService auth, ISingUpService singUp)
+        protected readonly IUserService _user;
+        public UserController(IAuthService auth, IUserService user)
         {
             _auth = auth;
-            _singUp = singUp;
+            _user = user;
         }
 
         [HttpPost("SingUp")]
         public async Task<IActionResult> SingUp([FromBody] SingUpDTO dto)
         {
-            string? result = await _singUp.SingUp(dto);
+            string? result = await _user.SingUp(dto);
             if(result != null)
             {
                 return Ok(new { result });
