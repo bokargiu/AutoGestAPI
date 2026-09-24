@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoGestAPI.Services.SingUpServices
 {
-    public class SingUpService : ISingUpService
+    public class UserService : IUserService
     {
         protected readonly AppDb _context;
         protected readonly IAuthService _authService;
-        public SingUpService(AppDb context, IAuthService authService)
+        public UserService(AppDb context, IAuthService authService)
         {
             _context = context;
             _authService = authService;
