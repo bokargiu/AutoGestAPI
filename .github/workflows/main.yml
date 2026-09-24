@@ -16,13 +16,11 @@ jobs:
         run: |
           curl -L --output cloudflared.deb \
             https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-
           sudo dpkg -i cloudflared.deb
 
       - name: Configurar chave SSH
         run: |
           mkdir -p ~/.ssh
-
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
@@ -32,12 +30,17 @@ jobs:
           Host ssh.bokargiu.com.br
               User bokargiu
               IdentityFile ~/.ssh/id_ed25519
-              ProxyCommand cloudflared access ssh --hostname %h
+              ProxyCommand cloudflared access ssh \
+                --hostname %h \
+                --service-token-id "${{ secrets.CF_ACCESS_CLIENT_ID }}" \
+                --service-token-secret "${{ secrets.CF_ACCESS_CLIENT_SECRET }}"
           EOF
 
           chmod 600 ~/.ssh/config
 
-      - name: Testar conexão
+      - name: Testar SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ssh.bokargiu.com.br \
-            "echo 'SSH pelo Cloudflare Tunnel funcionando!'"
+          ssh -o BatchMode=yes \
+              -o ConnectTimeout=15 \
+              ssh.bokargiu.com.br \
+              "echo 'SSH funcionando!'"
