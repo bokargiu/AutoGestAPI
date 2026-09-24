@@ -22,5 +22,7 @@ jobs:
         run: |
           ssh -p ${{ secrets.SERVER_PORT }} \
             -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -o BatchMode=yes \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
             "echo 'GitHub Actions conectado ao servidor!'"
