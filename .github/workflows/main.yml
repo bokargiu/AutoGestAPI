@@ -12,43 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Instalar cloudflared
+        run: |
+          curl -L --output cloudflared.deb \
+            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+
+          sudo dpkg -i cloudflared.deb
+
       - name: Configurar chave SSH
         run: |
           mkdir -p ~/.ssh
+
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          
-      - name: Testar DNS
-        run: |
-          echo "Resolvendo domínio..."
-          getent hosts "${{ secrets.SERVER_HOST }}"
 
-      - name: Testar rota
+      - name: Configurar SSH
         run: |
-          ip route
-          ping -c 4 "${{ secrets.SERVER_HOST }}" || true
-          
-      - name: Testar host e porta
+          cat <<EOF > ~/.ssh/config
+          Host ssh.bokargiu.com.br
+              User bokargiu
+              IdentityFile ~/.ssh/id_ed25519
+              ProxyCommand cloudflared access ssh --hostname %h
+          EOF
+
+          chmod 600 ~/.ssh/config
+
+      - name: Testar conexão
         run: |
-          echo "Host configurado"
-          nc -vz -w 10 "${{ secrets.SERVER_HOST }}" "${{ secrets.SERVER_PORT }}"
-      
-      - name: Testar SSH
-        run: |
-          ssh \
-            -v \
-            -p "${{ secrets.SERVER_PORT }}" \
-            -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=10 \
-            -o BatchMode=yes \
-            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
-            "echo 'SSH funcionando!'"
-      
-      - name: Testar conexão com servidor
-        run: |
-          ssh -p ${{ secrets.SERVER_PORT }} \
-            -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=10 \
-            -o BatchMode=yes \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
-            "echo 'GitHub Actions conectado ao servidor!'"
+          ssh -o StrictHostKeyChecking=no ssh.bokargiu.com.br \
+            "echo 'SSH pelo Cloudflare Tunnel funcionando!'"
