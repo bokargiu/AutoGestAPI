@@ -18,6 +18,16 @@ jobs:
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           
+      - name: Testar DNS
+        run: |
+          echo "Resolvendo domínio..."
+          getent hosts "${{ secrets.SERVER_HOST }}"
+
+      - name: Testar rota
+        run: |
+          ip route
+          ping -c 4 "${{ secrets.SERVER_HOST }}" || true
+          
       - name: Testar host e porta
         run: |
           echo "Host configurado"
