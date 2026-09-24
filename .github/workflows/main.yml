@@ -17,7 +17,23 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-
+          
+      - name: Testar host e porta
+        run: |
+          echo "Host configurado"
+          nc -vz -w 10 "${{ secrets.SERVER_HOST }}" "${{ secrets.SERVER_PORT }}"
+      
+      - name: Testar SSH
+        run: |
+          ssh \
+            -v \
+            -p "${{ secrets.SERVER_PORT }}" \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -o BatchMode=yes \
+            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
+            "echo 'SSH funcionando!'"
+      
       - name: Testar conexão com servidor
         run: |
           ssh -p ${{ secrets.SERVER_PORT }} \
