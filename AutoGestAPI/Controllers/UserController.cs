@@ -42,12 +42,5 @@ namespace AutoGestAPI.Controllers
             }
             return BadRequest();
         }
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] UserLoginDTO dto)
-        {
-            //deploy 3
-            return Ok();
-        }
     }
 }
