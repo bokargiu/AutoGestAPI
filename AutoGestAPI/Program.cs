@@ -42,9 +42,8 @@ builder.Services.AddCors(options =>
 #endregion
 
 #region DB Configuration
-var connection = builder.Environment.IsDevelopment() 
-                    ? builder.Configuration["ConnectionStrings:Connection"]
-                    : File.ReadAllText("/run/secrets/autogest-connection").Trim();
+var connection = builder.Configuration["ConnectionStrings:Connection"];
+
 builder.Services.AddDbContext<AppDb>(options =>
 {
     options.UseMySql(connection, ServerVersion.AutoDetect(connection));
