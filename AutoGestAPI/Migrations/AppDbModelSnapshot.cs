@@ -44,8 +44,6 @@ namespace AutoGestAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Client");
                 });
 
@@ -73,8 +71,6 @@ namespace AutoGestAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Order");
                 });
@@ -118,43 +114,7 @@ namespace AutoGestAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Service");
-                });
-
-            modelBuilder.Entity("AutoGestAPI.Models.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
-            modelBuilder.Entity("AutoGestAPI.Models.Client", b =>
-                {
-                    b.HasOne("AutoGestAPI.Models.User", "User")
-                        .WithMany("Clients")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AutoGestAPI.Models.Order", b =>
@@ -165,15 +125,7 @@ namespace AutoGestAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AutoGestAPI.Models.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AutoGestAPI.Models.OrderAndService", b =>
@@ -195,17 +147,6 @@ namespace AutoGestAPI.Migrations
                     b.Navigation("Service");
                 });
 
-            modelBuilder.Entity("AutoGestAPI.Models.Service", b =>
-                {
-                    b.HasOne("AutoGestAPI.Models.User", "User")
-                        .WithMany("Services")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AutoGestAPI.Models.Client", b =>
                 {
                     b.Navigation("Orders");
@@ -219,15 +160,6 @@ namespace AutoGestAPI.Migrations
             modelBuilder.Entity("AutoGestAPI.Models.Service", b =>
                 {
                     b.Navigation("OrderAndServices");
-                });
-
-            modelBuilder.Entity("AutoGestAPI.Models.User", b =>
-                {
-                    b.Navigation("Clients");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,17 +13,13 @@ namespace AutoGestAPI.Models
 
         [JsonIgnore]
         public Guid UserId { get; set; }
-        [JsonIgnore]
-        public User User { get; set; }
 
         public Service() { }
-        public Service(string title, double price, int durationMin, User user)
+        public Service(string title, double price, int durationMin)
         {
             this.Title = title;
             this.Price = price;
             this.DurationMin = durationMin;
-            this.UserId = user.Id;
-            this.User = user;
         }
     }
 }
