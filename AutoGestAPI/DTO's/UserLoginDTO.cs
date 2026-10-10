@@ -2,12 +2,12 @@
 {
     public class UserLoginDTO
     {
-        public string UserOrEmail { get; set; } = string.Empty;
+        public string NameOrEmail { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 
-        public UserLoginDTO(string UserOrEmail, string Password)
+        public UserLoginDTO(string NameOrEmail, string Password)
         {
-            this.UserOrEmail = UserOrEmail;
+            this.NameOrEmail = NameOrEmail;
             this.Password = Password;
         }
     }

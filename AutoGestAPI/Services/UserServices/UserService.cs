@@ -10,25 +10,17 @@ namespace AutoGestAPI.Services.SingUpServices
     {
         protected readonly AppDb _context;
         protected readonly IAuthService _authService;
-        public UserService(AppDb context, IAuthService authService)
+        private readonly HttpClient _http;
+        public UserService(AppDb context, IAuthService authService, IHttpClientFactory httpClientBuilder)
         {
             _context = context;
             _authService = authService;
+            _http = httpClientBuilder.CreateClient();
         }
-
-        public async Task<string> SingUp(SingUpDTO dto)
+        public async Task<string?> SingUp(SingUpDTO dto)
         {
-            User? user = await _context.User.Where(u => u.Username == dto.Username ||
-                                                u.Email == dto.Username ||
-                                                u.Username == dto.Email ||
-                                                u.Email == dto.Email).FirstOrDefaultAsync();
-            if (user != null)
-                throw new BadHttpRequestException("User já existe");
-
-            User newUser = new User(dto.Username, dto.Email, dto.Password);
-            await _context.User.AddAsync(newUser);
-            await _context.SaveChangesAsync();
-            return await _authService.Login(new UserLoginDTO(dto.Username, dto.Password));
+            var response = await _http.PostAsJsonAsync("https://bokargiu.com.br/api/User", dto);
+            return (int)response.StatusCode == StatusCodes.Status201Created ? await response.Content.ReadAsStringAsync() : null;
 
         }
     }

@@ -20,36 +20,14 @@ namespace AutoGestAPI.Services.AuthServices
         protected readonly IConfiguration _configuration;
         protected readonly AppDb _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly HttpClient _http;
 
-        public AuthService(IConfiguration configuration, AppDb context, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IConfiguration configuration, AppDb context, IHttpContextAccessor httpContextAccessor, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-        }
-
-        public string GenerateJwt(User user)
-        {
-            var settings = _configuration.GetSection("Jwt");
-            var tokenDescription = new SecurityTokenDescriptor
-            {
-                Subject = new System.Security.Claims.ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Email, user.Email)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                Issuer = settings["Issuer"],
-                Audience = settings["Audience"],
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings["Key"])),
-                    SecurityAlgorithms.HmacSha256Signature
-                    )
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescription);
-            return tokenHandler.WriteToken(token);
+            _http = httpClientFactory.CreateClient();
         }
 
         public string HashPassword(string password)
@@ -61,15 +39,10 @@ namespace AutoGestAPI.Services.AuthServices
         {
             return BCrypt.Net.BCrypt.Verify(password, hashPassword);
         }
-
         public async Task<string?> Login(UserLoginDTO dto)
         {
-            User? user = await _context.User.Where(u => u.Username == dto.UserOrEmail || u.Email == dto.UserOrEmail).FirstOrDefaultAsync();
-            if (user != null && VerifyPassword(dto.Password, user.Password))
-            {
-                return GenerateJwt(user);
-            }
-            return null;
+            var response = await _http.PostAsJsonAsync("https://bokargiu.com.br/api/User/Login", dto);
+            return (int)response.StatusCode == StatusCodes.Status200OK ? await response.Content.ReadAsStringAsync() : null;
         }
         public async Task<Guid> getUserId()
         {

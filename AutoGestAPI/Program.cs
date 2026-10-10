@@ -91,9 +91,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         ForwardedHeaders.XForwardedFor |
         ForwardedHeaders.XForwardedProto;
 
-    //options.KnownProxies.Add(
-    //    IPAddress.Parse("127.0.0.1")
-    //);
     options.KnownProxies.Add(
         IPAddress.Parse("187.75.67.81")
     );
@@ -101,15 +98,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services.AddRateLimiter(options =>
 {
-    //options.AddTokenBucketLimiter("BruteForceProtection", opt =>
-    //{
-    //    opt.TokenLimit = 10;
-    //    opt.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
-    //    opt.TokensPerPeriod = 5;
-    //    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    //    opt.QueueLimit = 0;
-    //});
-
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
         httpContext =>
         {
@@ -141,12 +129,13 @@ builder.Services.AddRateLimiter(options =>
 
 #region Add Services
 builder.Services.AddScoped<AppDb>();
-builder.Services.AddScoped<User>();
 builder.Services.AddScoped<Client>();
 builder.Services.AddScoped<Service>();
 builder.Services.AddScoped<Order>();
 builder.Services.AddScoped<OrderAndService>();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -199,7 +188,7 @@ app.MapGet("/db", async (AppDb db, HttpContext _) =>
         $"Query: {(query - abertura).TotalMilliseconds:F2} ms | " +
         $"Total: {total.TotalMilliseconds:F2} ms | "
     );
-});
+}).RequireAuthorization("Admin");
 
 using (var scope = app.Services.CreateScope()) { // Adicionando Migrações
     var db = scope.ServiceProvider.GetRequiredService<AppDb>();

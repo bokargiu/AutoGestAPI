@@ -18,9 +18,6 @@ namespace AutoGestAPI.Models
         [JsonIgnore]
         public Guid UserId { get; set; }
 
-        [JsonIgnore]
-        public User User { get; set; }
-
         public Order() { }
         public Order(DateTime start)
         {

@@ -14,9 +14,6 @@ namespace AutoGestAPI.Models
         [JsonIgnore]
         public Guid UserId { get; set; } = Guid.Empty;
 
-        [JsonIgnore]
-        public User User { get; set; }
-
         public Client() { }
         public Client(string name, string number, int rating)
         {
