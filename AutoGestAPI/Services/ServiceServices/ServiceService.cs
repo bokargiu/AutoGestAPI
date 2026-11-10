@@ -5,6 +5,8 @@ using AutoGestAPI.Models;
 using AutoGestAPI.Services.AuthServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Net;
+using System.Security.Claims;
 
 namespace AutoGestAPI.Services.ServiceServices
 {
@@ -33,8 +35,12 @@ namespace AutoGestAPI.Services.ServiceServices
             return service;
 
         }
-        public async Task postService(ServiceDto dto)
+        public async Task postService(ServiceDto dto, string? role = null)
         {
+            Guid id = await _auth.getUserId();
+            int qtd = await _context.Service.Where(s => s.UserId == id).CountAsync();
+            await _auth.roleIsPermited(id, qtd, role);
+
             Service service = new Service();
             service.Title = dto.Title;
             service.Price = dto.Price;

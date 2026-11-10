@@ -32,15 +32,13 @@ namespace AutoGestAPI.Middleware
             };
 
             string message = exception.Message;
-            string? details = exception.StackTrace;
 
             context.Response.ContentType = "aplication/json";
             context.Response.StatusCode = (int)status;
             return context.Response.WriteAsJsonAsync(new
             {
                 status,
-                message,
-                details
+                message
             });
         }
     }

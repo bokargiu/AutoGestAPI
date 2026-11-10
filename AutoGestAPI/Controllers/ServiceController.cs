@@ -2,7 +2,9 @@
 using AutoGestAPI.Services.ServiceServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AutoGestAPI.Controllers
 {
@@ -24,7 +26,7 @@ namespace AutoGestAPI.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> postService([FromBody] ServiceDto dto)
         {
-            await _service.postService(dto);
+            await _service.postService(dto, role: User.FindFirst(ClaimTypes.Role)?.Value);
             return Ok();
         }
         [HttpPatch("{Id}"), Authorize]

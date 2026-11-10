@@ -7,7 +7,7 @@ namespace AutoGestAPI.Services.ServiceServices
     {
         Task<List<Service>> getServicesByUserId(); 
         Task<Service> getServiceById(string idString);
-        Task postService(ServiceDto dto);
+        Task postService(ServiceDto dto, string? role = null);
         Task patchService(ServiceDto dto, string id);
         Task dellService(string serviceId);
     }

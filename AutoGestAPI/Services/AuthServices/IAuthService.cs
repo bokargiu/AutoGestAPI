@@ -9,5 +9,6 @@ namespace AutoGestAPI.Services.AuthServices
         bool VerifyPassword(string password, string hashPassword);
         Task<string?> Login(UserLoginDTO dto);
         Task<Guid> getUserId();
+        Task roleIsPermited(Guid userId, int qtd, string? role = null, int?[]? vars = null);
     }
 }
