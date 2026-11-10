@@ -1,0 +1,64 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-autogest
+    restart: always
+    secrets:
+      - root-pw
+      - db-pw
+      - db-user
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: run/secrets/root-pw
+      MYSQL_DATABASE: AutoGest
+      MYSQL_USER_FILE: run/secrets/db-user
+      MYSQL_PASSWORD_FILE: run/secrets/db-pw
+    ports:
+    - "3311:3306"
+    volumes:
+    - mysql-autogest:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+
+  api:
+    build: .
+    container_name: autogest-api
+    restart: unless-stopped
+    ports:
+    - "5169:8080"
+    env_file:
+      - ./secrets/.env
+    volumes:
+     - aspnet-autogest:/root/.aspnet/DataProtection-Keys
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+
+
+  angular:
+    build:
+      context: ../../AutoGestFront
+      dockerfile: Dockerfile
+    container_name: autogest-front
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+
+volumes:
+  mysql-autogest:
+  aspnet-autogest:
+
+secrets:
+  root-pw:
+    file: ./secrets/root-pw
+  db-pw:
+    file: ./secrets/db-pw
+  db-user:
+    file: ./secrets/db-user

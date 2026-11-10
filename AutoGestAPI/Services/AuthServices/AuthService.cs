@@ -57,5 +57,33 @@ namespace AutoGestAPI.Services.AuthServices
 
             return Guid.Parse(claim.Value);
         }
+        public async Task roleIsPermited(Guid userId, int qtd, string? role = null, int?[]? vars = null)
+        {
+            if (role == null)
+                role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            switch (role)
+            {
+                case "Admin":
+                    break;
+                case "User":
+                    if (qtd >= (vars?[0] ?? 5))
+                        throw new UnauthorizedException("Não autorizado, limite atingido");
+                    break;
+                case "User_Basic":
+                    if (qtd >= (vars?[1] ?? 15))
+                        throw new UnauthorizedException("Não autorizado, limite atingido");
+                    break;
+                case "User_Plus":
+                    if (qtd >= (vars?[2] ?? 50))
+                        throw new UnauthorizedException("Não autorizado, limite atingido");
+                    break;
+                case "User_Unlimited":
+                    break;
+                default:
+                    throw new UnauthorizedException("Não autorizado");
+            }
+
+        }
     }
 }

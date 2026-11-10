@@ -4,6 +4,7 @@ using AutoGestAPI.Exceptions;
 using AutoGestAPI.Models;
 using AutoGestAPI.Services.AuthServices;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace AutoGestAPI.Services.ClientServices
 {
@@ -44,6 +45,11 @@ namespace AutoGestAPI.Services.ClientServices
         public async Task postClient(ClientDto dto)
         {
             if (dto.Rating < 0 || dto.Rating > 5) throw new BadRequestException("nivel de rating inválido");
+
+            Guid id = await _auth.getUserId();
+            int qtd = await _context.Client.Where(c => c.UserId == id).CountAsync();
+            await _auth.roleIsPermited(id, qtd);
+
             Client client = new Client();
             client.Name = dto.Name;
             client.Number = dto.Number;
